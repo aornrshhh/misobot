@@ -47,8 +47,8 @@ if __name__ == "__main__":
     # ⬇️ 여기에 dotenv 불러오는 코드 정확히 위치
     load_dotenv(dotenv_path=".env")
     token = os.getenv("DISCORD_TOKEN")
+    print("token:", token)  # ← 추가
 
-    print("토큰 확인:", token)  # 이 줄 추가!
 
     token = os.getenv("DISCORD_TOKEN")
     if not token:
