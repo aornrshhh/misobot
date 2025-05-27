@@ -4,21 +4,10 @@ from discord.ext import commands
 import asyncio
 from aiohttp import web
 from dotenv import load_dotenv
-import os
-
-load_dotenv(dotenv_path=".env")  # ← 경로 명시!
-token = os.getenv("DISCORD_TOKEN")
-
-if token is None:
-    raise Exception("DISCORD_TOKEN이 설정되지 않았습니다.")
-
-
-
 
 # ─── Keep-Alive 웹서버 정의 ───────────────────────────────────────
 async def handle(request):
     return web.Response(text="OK")
-
 
 async def start_keep_alive():
     app = web.Application()
@@ -28,12 +17,9 @@ async def start_keep_alive():
     site = web.TCPSite(runner, "0.0.0.0", 3000)
     await site.start()
 
-
 # ────────────────────────────────────────────────────────────────
 
-
 class MyBot(commands.Bot):
-
     def __init__(self):
         intents = discord.Intents.default()
         intents.message_content = True
@@ -57,10 +43,13 @@ class MyBot(commands.Bot):
         await self.tree.sync()
         print("▶ Commands synced globally")
 
-
 if __name__ == "__main__":
+    # ⬇️ 여기에 dotenv 불러오는 코드 정확히 위치
+    load_dotenv(dotenv_path=".env")
+    
     token = os.getenv("DISCORD_TOKEN")
     if not token:
         raise SystemExit("DISCORD_TOKEN이 설정되지 않았습니다.")
+    
     bot = MyBot()
     bot.run(token)
