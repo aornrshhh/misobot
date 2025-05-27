@@ -32,9 +32,9 @@ class MyBot(commands.Bot):
 
         # ② Cog 확장 로드
         for ext in [
-                "cogs.emoji_cog",
-                "cogs.sm_cog",
-                "cogs.dday_cog",
+                "emoji_cog",
+                "sm_cog",
+                "dday_cog",
         ]:
             await self.load_extension(ext)
             print(f"Loaded extension: {ext}")
