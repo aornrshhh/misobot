@@ -3,6 +3,15 @@ import discord
 from discord.ext import commands
 import asyncio
 from aiohttp import web
+from dotenv import load_dotenv
+import os
+
+load_dotenv()
+token = os.getenv("DISCORD_TOKEN")
+
+if token is None:
+    raise Exception("DISCORD_TOKEN이 설정되지 않았습니다.")
+
 
 
 # ─── Keep-Alive 웹서버 정의 ───────────────────────────────────────
