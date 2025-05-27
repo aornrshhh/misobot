@@ -6,11 +6,12 @@ from aiohttp import web
 from dotenv import load_dotenv
 import os
 
-load_dotenv()
+load_dotenv(dotenv_path=".env")  # ← 경로 명시!
 token = os.getenv("DISCORD_TOKEN")
 
 if token is None:
     raise Exception("DISCORD_TOKEN이 설정되지 않았습니다.")
+
 
 
 
