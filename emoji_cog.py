@@ -2,7 +2,7 @@ import discord
 from discord.ext import commands
 from discord import app_commands
 import re
-import emoji
+import emoji  # pip install emoji
 
 
 class EmojiCog(commands.Cog):
@@ -17,17 +17,17 @@ class EmojiCog(commands.Cog):
         url = None
         size = 128
 
-        # 먼저 명령어 입력 흔적 없애기
-        await interaction.response.defer(ephemeral=True)  # 원래 메시지는 숨김
+        # 명령어 사용 흔적 숨기기 (출력은 공개)
+        await interaction.response.defer(ephemeral=False)
 
-        # 1) 커스텀 이모지
+        # 1) 커스텀 이모지 (<:name:id> 또는 <a:name:id>)
         m1 = re.fullmatch(r'<a?:([\w~]+):(\d+)>', target)
         if m1:
             eid = m1.group(2)
             ext = 'gif' if target.startswith('<a:') else 'png'
             url = f"https://cdn.discordapp.com/emojis/{eid}.{ext}?size={size}"
 
-        # 2) :shortcode:
+        # 2) :shortcode: (예: :smile:)
         elif re.fullmatch(r':([\w+-]+):', target):
             em = discord.utils.get(self.bot.emojis, name=target.strip(":"))
             if em:
@@ -38,7 +38,7 @@ class EmojiCog(commands.Cog):
                     await interaction.followup.send(uni)
                     return
 
-        # 3) 유니코드 이모지
+        # 3) 유니코드 이모지 직접 입력
         else:
             if emoji.is_emoji(target):
                 await interaction.followup.send(target)
@@ -49,7 +49,8 @@ class EmojiCog(commands.Cog):
             await interaction.followup.send(url)
         else:
             await interaction.followup.send(
-                "올바른 이모지 형식으로 입력해주세요! :\n`<:이름:ID>`, `:이름:`, 또는 유니코드 문자."
+                "올바른 이모지 형식으로 입력해주세요! :\n"
+                "`<:이름:ID>`, `:이름:`, 또는 유니코드 문자."
             )
 
 
