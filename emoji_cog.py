@@ -1,9 +1,8 @@
-# cogs/emoji_cog.py
 import discord
 from discord.ext import commands
 from discord import app_commands
 import re
-import emoji  # pip install emoji
+import emoji
 
 
 class EmojiCog(commands.Cog):
@@ -18,14 +17,17 @@ class EmojiCog(commands.Cog):
         url = None
         size = 128
 
-        # 1) 커스텀 이모지 (<:name:id> 또는 <a:name:id>)
+        # 먼저 명령어 입력 흔적 없애기
+        await interaction.response.defer(ephemeral=True)  # 원래 메시지는 숨김
+
+        # 1) 커스텀 이모지
         m1 = re.fullmatch(r'<a?:([\w~]+):(\d+)>', target)
         if m1:
             eid = m1.group(2)
             ext = 'gif' if target.startswith('<a:') else 'png'
             url = f"https://cdn.discordapp.com/emojis/{eid}.{ext}?size={size}"
 
-        # 2) :shortcode: (예: :smile:)
+        # 2) :shortcode:
         elif re.fullmatch(r':([\w+-]+):', target):
             em = discord.utils.get(self.bot.emojis, name=target.strip(":"))
             if em:
@@ -33,24 +35,22 @@ class EmojiCog(commands.Cog):
             else:
                 uni = emoji.emojize(target, language="alias")
                 if uni != target:
-                    await interaction.response.send_message(uni)
+                    await interaction.followup.send(uni)
                     return
 
-        # 3) 유니코드 이모지 직접 입력
+        # 3) 유니코드 이모지
         else:
             if emoji.is_emoji(target):
-                await interaction.response.send_message(target)
+                await interaction.followup.send(target)
                 return
 
         # 최종 응답
         if url:
-            await interaction.response.send_message(url)
+            await interaction.followup.send(url)
         else:
-            await interaction.response.send_message(
-                "올바른 이모지 형식으로 입력해주세요! :\n`<:이름:ID>`, `:이름:`, 또는 유니코드 문자.",
-                ephemeral=True
+            await interaction.followup.send(
+                "올바른 이모지 형식으로 입력해주세요! :\n`<:이름:ID>`, `:이름:`, 또는 유니코드 문자."
             )
-
 
 
 async def setup(bot: commands.Bot):
