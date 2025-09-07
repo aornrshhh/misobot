@@ -51,26 +51,6 @@ class EmojiCog(commands.Cog):
                 ephemeral=True
             )
 
-    @app_commands.command(name="emoji_list", description="서버 이모지 목록을 보여줍니다")
-    async def emoji_list(self, interaction: discord.Interaction):
-        emojis = interaction.guild.emojis if interaction.guild else []
-        embed = discord.Embed(
-            title="이모지 목록",
-            color=discord.Color(0xFEB7D5)
-        )
-
-        if emojis:
-            lines = [f"{e} `:{e.name}:`" for e in emojis]
-            desc = ""
-            for line in lines:
-                if len(desc) + len(line) + 1 > 4096:
-                    break
-                desc += line + "\n"
-            embed.description = desc
-        else:
-            embed.description = "그딴거 없어"
-
-        await interaction.response.send_message(embed=embed)
 
 
 async def setup(bot: commands.Bot):
